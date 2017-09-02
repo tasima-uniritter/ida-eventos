@@ -1,6 +1,8 @@
 package br.com.uniritter.tasima.idaEventos.domain.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.Date;
  * Created by Alu201730204 on 01/09/2017.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="EVENTO")
 public class Evento {
