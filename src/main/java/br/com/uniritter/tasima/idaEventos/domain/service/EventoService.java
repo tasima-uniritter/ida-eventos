@@ -1,12 +1,13 @@
 package br.com.uniritter.tasima.idaEventos.domain.service;
 
-import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
-import br.com.uniritter.tasima.idaEventos.domain.repository.EventoRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
+import br.com.uniritter.tasima.idaEventos.domain.repository.EventoRepository;
 
 @Service
 @Transactional
@@ -22,4 +23,11 @@ public class EventoService {
     public List<Evento> listarTodosEventos() {
         return eventoRepository.findAll();
     }
+
+	public Evento buscar(long l) {
+		return null;
+	}
+
+	public void inserir(Evento evento) {
+	}
 }

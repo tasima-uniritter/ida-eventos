@@ -3,6 +3,7 @@ package br.com.uniritter.tasima.idaEventos.domain.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Setter
 @Table(name="EVENTO")
 public class Evento {
     @Id
