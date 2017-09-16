@@ -43,6 +43,7 @@ public class EventoController {
         }
     }
 
+
     @RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
     public ResponseEntity<?> cadastrarEvento(@RequestBody Evento evento) {
         eventoService.cadastrarEvento(evento);
