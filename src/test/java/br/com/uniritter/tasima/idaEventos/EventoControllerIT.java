@@ -2,8 +2,10 @@ package br.com.uniritter.tasima.idaEventos;
 
 import static org.junit.Assert.assertEquals;
 import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
+import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.ObjectMapperType;
@@ -13,13 +15,11 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.junit4.SpringRunner;
 import io.restassured.response.Response;
 
-//import org.json.simple.JSONObject;
-//import org.json.simple.parser.JSONParser;
-//import org.json.simple.parser.ParseException;
-
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,13 +38,21 @@ public class EventoControllerIT {
     }
 
     @Test
-    public void buscarPorNome_eventoExistente_encontrado() throws ParseException, JsonProcessingException {
+    public void buscarPorNome_eventoExistente_encontrado() throws ParseException, IOException {
         // dado um evento existente
         Evento dto = popularDto();
         apiPost(dto);
 
-        // quando o evento for buscado, então o status code deve ser OK
-        apiGetPorNome(dto.getNome()).then().assertThat().statusCode(HttpStatus.SC_OK);
+        // quando o evento for buscado
+        Response resposta = apiGetPorNome(dto.getNome());
+
+        // então o status code deve ser OK
+        resposta.then().assertThat().statusCode(HttpStatus.SC_OK);
+
+        String stringJson = resposta.getBody().asString();
+
+        // Clean up
+        apiDelete(stringJsonToEvento(stringJson).getIdEvento());
     }
 
     @Test
@@ -57,18 +65,19 @@ public class EventoControllerIT {
     }
 
     @Test
-    public void cadastrar_eventoCompleto_criado() throws ParseException, JsonProcessingException {
+    public void cadastrar_eventoCompleto_criado() throws ParseException, IOException {
         // dado um evento populado corretamente
-        Evento dto = popularDto();
+        Evento dtoPopulado = popularDto();
 
         // quando cadastrar o evento, então o status code deve ser CREATED.
-        apiPost(dto).then().assertThat().statusCode(HttpStatus.SC_CREATED);
+        apiPost(dtoPopulado).then().assertThat().statusCode(HttpStatus.SC_CREATED);
 
-        // e o evento retornado por get deve ser igual ao que foi cadastrado
-        assertEqualsDTO(dto, apiGetPorNome(dto.getNome()));
+        // e o evento retornado por get deve ser igual ao que foi populado
+        Evento dtoCriado = stringJsonToEvento(apiGetPorNome(dtoPopulado.getNome()).getBody().asString());
+        assertEquals(dtoPopulado, dtoCriado);
 
         // Clean up
-        apiDelete(dto.getIdEvento());
+        apiDelete(dtoCriado.getIdEvento());
     }
 
     @Test
@@ -82,16 +91,17 @@ public class EventoControllerIT {
     }
 
     @Test
-    public void cadastrar_eventoComNomeCom150Caracteres_criado() throws ParseException, JsonProcessingException {
+    public void cadastrar_eventoComNomeCom150Caracteres_criado() throws ParseException, IOException {
         // dado um evento populado com nome de 150 caracteres
-        Evento dto = popularDto();
-        dto.setNome("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar mi vitae elit dapibus aliquam. In vitae purus eu dolor molestie cras amet");
+        Evento dtoPopulado = popularDto();
+        dtoPopulado.setNome("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar mi vitae elit dapibus aliquam. In vitae purus eu dolor molestie cras amet");
 
         // quando cadastrar o evento, então o status code deve ser CREATED
-        apiPost(dto).then().assertThat().statusCode(HttpStatus.SC_CREATED);
+        apiPost(dtoPopulado).then().assertThat().statusCode(HttpStatus.SC_CREATED);
 
         // Clean up
-        apiDelete(dto.getIdEvento());
+        Evento dtoCriado = stringJsonToEvento(apiGetPorNome(dtoPopulado.getNome()).getBody().asString());
+        apiDelete(dtoCriado.getIdEvento());
     }
 
     @Test
@@ -178,13 +188,6 @@ public class EventoControllerIT {
         return given().spec(spec).get("/api/evento/listar");
     }
 
-    private void assertEqualsDTO(Evento dtoExpected, Response responseActual) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        String stringExpectedJson = mapper.writeValueAsString(dtoExpected);
-
-        assertEquals(stringExpectedJson, responseActual.getBody().asString());
-    }
-
     private Evento popularDto() {
         Evento evento = new Evento();
 
@@ -194,11 +197,10 @@ public class EventoControllerIT {
         return evento;
     }
 
-//    private JSONObject stringToJson(String stringJson) throws ParseException {
-//        JSONParser parser = new JSONParser();
-//        JSONObject jsonPayload = (JSONObject) parser.parse(stringJson);
-//        return jsonPayload;
-//    }
+    private Evento stringJsonToEvento(String stringJson) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(stringJson, Evento.class);
+    }
 
     private Date getTomorrow() {
         Calendar cal = Calendar.getInstance();
