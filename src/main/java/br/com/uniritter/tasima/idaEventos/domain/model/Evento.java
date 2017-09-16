@@ -1,11 +1,14 @@
 package br.com.uniritter.tasima.idaEventos.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -15,7 +18,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name="EVENTO")
 public class Evento {
     @Id
@@ -23,9 +25,13 @@ public class Evento {
     @Column(name="ID_EVENTO")
     private Long idEvento;
 
-    @Column(name="NOME")
+    @NotNull
+    @Size(min = 1, max = 150, message = "error.nome.size")
+    @Column(name="NOME", unique = true)
     private String nome;
 
+    @NotNull
     @Column(name="DATA")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private Date data;
 }

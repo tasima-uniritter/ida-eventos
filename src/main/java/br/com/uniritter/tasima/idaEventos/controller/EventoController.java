@@ -29,7 +29,7 @@ public class EventoController {
         if (evento != null) {
             return new ResponseEntity(evento, HttpStatus.OK);
         } else {
-            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -39,7 +39,7 @@ public class EventoController {
         if (evento != null) {
             return new ResponseEntity(evento, HttpStatus.OK);
         } else {
-            return new ResponseEntity(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
