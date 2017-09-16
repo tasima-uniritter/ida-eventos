@@ -26,7 +26,7 @@ public class IngressoController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/listar")
     public ResponseEntity<List<Ingresso>> listar() {
-        return new ResponseEntity<>(ingressoService.listarIngresso(), HttpStatus.OK);
+        return new ResponseEntity<>(ingressoService.listarIngressos(), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
