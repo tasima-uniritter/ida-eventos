@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -26,12 +27,13 @@ public class Evento {
     private Long idEvento;
 
     @NotNull
-    @Size(min = 1, max = 150, message = "error.nome.size")
+    @Size(min = 1, max = 150, message = "erro.evento.nome.tamanho")
     @Column(name="NOME", unique = true)
     private String nome;
 
     @NotNull
-    @Column(name="DATA")
+    @Future(message = "erro.evento.data.futuro")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
+    @Column(name="DATA")
     private Date data;
 }

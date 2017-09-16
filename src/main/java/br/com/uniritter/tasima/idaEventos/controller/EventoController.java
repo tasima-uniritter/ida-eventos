@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class EventoController {
         return new ResponseEntity<>(eventoService.listarTodosEventos(), HttpStatus.OK);
     }
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET, value = "/buscar/{id}")
     public ResponseEntity<List<Evento>> buscarPorNome(@PathVariable String nome) {
         Evento evento = eventoService.buscarPorNome(nome);
@@ -33,6 +35,7 @@ public class EventoController {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET, value = "/id/{id}")
     public ResponseEntity<List<Evento>> buscarPorId(@PathVariable long id) {
         Evento evento = eventoService.buscarPorId(id);
@@ -45,7 +48,7 @@ public class EventoController {
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
-    public ResponseEntity<?> cadastrarEvento(@RequestBody Evento evento) {
+    public ResponseEntity<?> cadastrarEvento(@Validated @RequestBody Evento evento) {
         eventoService.cadastrarEvento(evento);
         return new ResponseEntity(HttpStatus.CREATED);
     }
