@@ -45,6 +45,7 @@ public class EventoControllerIT {
         apiDelete(dto.getIdEvento());
     }
 
+    @Ignore
     @Test
     public void get_NonexistingScheduler_fail() throws ParseException, JsonProcessingException {
         // given a inexistent scheduler
