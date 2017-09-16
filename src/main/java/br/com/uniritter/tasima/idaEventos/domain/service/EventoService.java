@@ -24,9 +24,13 @@ public class EventoService {
         return eventoRepository.findAll();
     }
 
-	public Evento buscar(long l) {
-		return null;
-	}
+    public Evento buscarPorId(long l) {
+        return eventoRepository.findOne(l);
+    }
+
+    public Evento buscarPorNome(String s) {
+        return eventoRepository.findByNome(s);
+    }
 
 	public void inserir(Evento evento) {
 	}

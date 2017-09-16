@@ -17,13 +17,13 @@ public class EventoServiceTest {
 
     @Test
     public void buscar_idInexistente_eventoInexistente() {
-    	//dado um identificador aleatório
+    	//dado um identificador aleatï¿½rio
     	long idAleatorio = 43214231L;
     	
     	//quando um evento for buscado
-        Evento evento = eventoService.buscar(idAleatorio);
+        Evento evento = eventoService.buscarPorId(idAleatorio);
 
-        //então o evento deve ser nulo
+        //entï¿½o o evento deve ser nulo
         Assert.assertNull(evento);
     }
     
@@ -37,7 +37,7 @@ public class EventoServiceTest {
     	
 //    	Evento eventoInserido = eventoService.buscar(evento.getId());
     	
-    	//então o evento inserido não pode ser nulo.
+    	//entï¿½o o evento inserido nï¿½o pode ser nulo.
 //  	Assert.assertNotNull(eventoInserido);
     }
     
@@ -54,9 +54,8 @@ public class EventoServiceTest {
     private Evento popularDto() {
     	Evento evento = new Evento();
     	
-//    	evento.setId(123L);
-//    	evento.setNome("Meu nome");
-//    	evento.setDate(new Date());
+    	evento.setIdEvento(123L);
+    	evento.setNome("Fulano da Silva");
     	
     	return evento;
     }
