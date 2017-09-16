@@ -10,6 +10,7 @@ import io.restassured.mapper.ObjectMapperType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -30,6 +31,7 @@ public class EventoControllerIT {
         spec = new RequestSpecBuilder().setContentType(ContentType.JSON).setAccept(ContentType.JSON).setBaseUri("http://localhost:8080/").build();
     }
 
+    @Ignore
     @Test
     public void get_ExistingScheduler_success() throws ParseException, JsonProcessingException {
         // given a created scheduler
@@ -52,6 +54,7 @@ public class EventoControllerIT {
         apiGetPorId(dto.getIdEvento()).then().assertThat().statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
+    @Ignore
     @Test
     public void post_evento_success() throws ParseException, JsonProcessingException {
         // given a created scheduler
