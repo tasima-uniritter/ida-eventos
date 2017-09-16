@@ -16,22 +16,23 @@ public class EventoService {
     @Autowired
     private EventoRepository eventoRepository;
 
-    public void cadastrarEvento(Evento evento) {
+    public void cadastrar(Evento evento) {
         eventoRepository.save(evento);
     }
 
-    public List<Evento> listarTodosEventos() {
+    public List<Evento> listarTodos() {
         return eventoRepository.findAll();
     }
 
-    public Evento buscarPorId(long l) {
-        return eventoRepository.findOne(l);
+    public Evento buscarPorId(long id) {
+        return eventoRepository.findOne(id);
     }
 
-    public Evento buscarPorNome(String s) {
-        return eventoRepository.findByNome(s);
+    public Evento buscarPorNome(String nome) {
+        return eventoRepository.findByNome(nome);
     }
 
-	public void inserir(Evento evento) {
-	}
+    public void deletar(long id) {
+        eventoRepository.delete(id);
+    }
 }

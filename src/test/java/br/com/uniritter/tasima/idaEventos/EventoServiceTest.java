@@ -35,7 +35,7 @@ public class EventoServiceTest {
     	Evento evento = popularDto();
     	
     	//quando eu inserir o evento
-    	eventoService.inserir(evento);
+//    	eventoService.inserir(evento);
     	
 //    	Evento eventoInserido = eventoService.buscar(evento.getId());
     	

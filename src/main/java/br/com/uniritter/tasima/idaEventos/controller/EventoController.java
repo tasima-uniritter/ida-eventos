@@ -20,13 +20,13 @@ public class EventoController {
     private EventoService eventoService;
 
     @RequestMapping(method = RequestMethod.GET, value = "/listar")
-    public ResponseEntity<List<Evento>> listarEventos() {
-        return new ResponseEntity<>(eventoService.listarTodosEventos(), HttpStatus.OK);
+    public ResponseEntity<List<Evento>> listar() {
+        return new ResponseEntity<>(eventoService.listarTodos(), HttpStatus.OK);
     }
 
     @SuppressWarnings("unchecked")
-    @RequestMapping(method = RequestMethod.GET, value = "/buscar/{id}")
-    public ResponseEntity<List<Evento>> buscarPorNome(@PathVariable String nome) {
+    @RequestMapping(method = RequestMethod.GET, value = "/buscar/{nome}")
+    public ResponseEntity<Evento> buscarPorNome(@PathVariable String nome) {
         Evento evento = eventoService.buscarPorNome(nome);
         if (evento != null) {
             return new ResponseEntity(evento, HttpStatus.OK);
@@ -37,7 +37,7 @@ public class EventoController {
 
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET, value = "/id/{id}")
-    public ResponseEntity<List<Evento>> buscarPorId(@PathVariable long id) {
+    public ResponseEntity<Evento> buscarPorId(@PathVariable long id) {
         Evento evento = eventoService.buscarPorId(id);
         if (evento != null) {
             return new ResponseEntity(evento, HttpStatus.OK);
@@ -46,10 +46,15 @@ public class EventoController {
         }
     }
 
-
     @RequestMapping(method = RequestMethod.POST, value = "/cadastrar")
-    public ResponseEntity<?> cadastrarEvento(@Validated @RequestBody Evento evento) {
-        eventoService.cadastrarEvento(evento);
+    public ResponseEntity<?> cadastrar(@Validated @RequestBody Evento evento) {
+        eventoService.cadastrar(evento);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deletar/{id}")
+    public ResponseEntity<?> deletar(@PathVariable long id) {
+        eventoService.deletar(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
