@@ -12,12 +12,13 @@ import io.restassured.mapper.ObjectMapperType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import io.restassured.response.Response;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -25,6 +26,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static io.restassured.RestAssured.given;
+
+// TODO: Fazer funcionar as annotations "SpringApplicationConfiguration" e "IntegrationTest" (ou "WebIntegrationTest")
+
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringApplicationConfiguration(classes = ServletInitializer.class)
+//@WebAppConfiguration
+//@IntegrationTest("server.port:0")
+//@WebIntegrationTest("server.port:0")
 
 @RunWith(SpringRunner.class)
 public class EventoControllerIT {
