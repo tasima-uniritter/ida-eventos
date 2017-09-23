@@ -1,6 +1,12 @@
 package br.com.uniritter.tasima.idaEventos.domain.model;
 
-import lombok.*;
+import br.com.uniritter.tasima.idaEventos.domain.enums.CategoriaIngresso;
+import br.com.uniritter.tasima.idaEventos.domain.model.factory.CalculadoraDescontoFactory;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,15 +19,13 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name="INGRESSO")
 public class Ingresso {
 
-    private CalculadoraDesconto calculadoraDesconto;
-
-    Ingresso(CalculadoraDesconto calculadoraDesconto) {
-        this.calculadoraDesconto = calculadoraDesconto;
-    }
+    @Autowired
+    @Transient
+    @Qualifier("calculadoraDescontoFactory")
+    private CalculadoraDescontoFactory calculadoraDescontoFactory;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,8 +41,8 @@ public class Ingresso {
     private Double valor;
 
     @SuppressWarnings("WeakerAccess")
-    protected Double calcularValorComDesconto() {
-        return this.calculadoraDesconto.calcularValorDesconto(valor);
+    protected Double calcularValorComDesconto(CategoriaIngresso categoriaIngresso) {
+        return this.calculadoraDescontoFactory.getDesconto(categoriaIngresso.getCategoria()).calcularValorDesconto(valor);
     }
 
 }
