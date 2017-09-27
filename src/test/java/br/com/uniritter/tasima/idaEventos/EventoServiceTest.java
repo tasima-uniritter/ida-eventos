@@ -1,16 +1,16 @@
 package br.com.uniritter.tasima.idaEventos;
 
+import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
+import br.com.uniritter.tasima.idaEventos.domain.service.EventoService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
-import br.com.uniritter.tasima.idaEventos.domain.service.EventoService;
-
-@Ignore
+//TODO Lucas: investigar uma forma melhor. Anotação SpringBootTest sendo usada temporariamete para rodar os testes utilizando o contexto da aplicação (sobe o servidor durante os testes)
+@SpringBootTest
 @RunWith(SpringRunner.class)
 public class EventoServiceTest {
 

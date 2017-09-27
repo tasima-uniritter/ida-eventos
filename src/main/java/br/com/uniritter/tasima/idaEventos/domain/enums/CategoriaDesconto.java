@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum CategoriaIngresso {
+public enum CategoriaDesconto {
     ESTUDANTE("estudante"),
     IDOSO("idoso"),
     MEMBRO_GOLD("membroGold"),
