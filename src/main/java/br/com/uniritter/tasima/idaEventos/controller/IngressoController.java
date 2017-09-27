@@ -1,5 +1,6 @@
 package br.com.uniritter.tasima.idaEventos.controller;
 
+import br.com.uniritter.tasima.idaEventos.domain.enums.CategoriaDesconto;
 import br.com.uniritter.tasima.idaEventos.domain.model.Ingresso;
 import br.com.uniritter.tasima.idaEventos.domain.service.IngressoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,19 @@ public class IngressoController {
         Ingresso ingresso = ingressoService.buscarPorId(id);
         if (ingresso != null) {
             return new ResponseEntity(ingresso, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @RequestMapping(method = RequestMethod.GET, value = "/calcularValor/{tipoIngresso}/{categoriaDesconto}")
+    public ResponseEntity<Double> calcularValorDoIngressoComDesconto(@PathVariable String tipoIngresso, @PathVariable CategoriaDesconto categoriaDesconto) {
+        Ingresso ingresso = ingressoService.buscarPorTipo(tipoIngresso);
+        if (ingresso != null) {
+            double valorDoIngressoComDesconto = ingressoService.calcularValorDoIngressoComDesconto(ingresso, categoriaDesconto);
+
+            return new ResponseEntity(valorDoIngressoComDesconto, HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

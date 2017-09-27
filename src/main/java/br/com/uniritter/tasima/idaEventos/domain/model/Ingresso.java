@@ -1,6 +1,8 @@
 package br.com.uniritter.tasima.idaEventos.domain.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,15 +15,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name="INGRESSO")
 public class Ingresso {
-
-    private CalculadoraDesconto calculadoraDesconto;
-
-    Ingresso(CalculadoraDesconto calculadoraDesconto) {
-        this.calculadoraDesconto = calculadoraDesconto;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,10 +30,4 @@ public class Ingresso {
     @NotNull
     @Column(name="VALOR")
     private Double valor;
-
-    @SuppressWarnings("WeakerAccess")
-    protected Double calcularValorComDesconto() {
-        return this.calculadoraDesconto.calcularValorDesconto(valor);
-    }
-
 }
