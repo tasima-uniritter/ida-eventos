@@ -29,6 +29,8 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+//TODO Arrumar testes unitários de acordo com a implementação da US #3 - Disponibilizar Ingressos
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
