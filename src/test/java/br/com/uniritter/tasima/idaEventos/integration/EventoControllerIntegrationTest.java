@@ -1,25 +1,24 @@
-package br.com.uniritter.tasima.idaEventos;
+package br.com.uniritter.tasima.idaEventos.integration;
 
-import static org.junit.Assert.assertEquals;
+import br.com.uniritter.tasima.idaEventos.IdaEventosApplication;
 import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
-import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.ObjectMapperType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import io.restassured.response.Response;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -27,25 +26,25 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-// TODO: Fazer funcionar as annotations "SpringApplicationConfiguration" e "IntegrationTest" (ou "WebIntegrationTest")
-
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes = ServletInitializer.class)
-//@WebAppConfiguration
-//@IntegrationTest("server.port:0")
-//@WebIntegrationTest("server.port:0")
-
 @RunWith(SpringRunner.class)
-public class EventoControllerIT {
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = IdaEventosApplication.class)
+@AutoConfigureMockMvc
+@TestPropertySource(
+        locations = "classpath:application-integrationtest.properties")
+public class EventoControllerIntegrationTest {
     private static RequestSpecification spec;
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        System.setProperty("enviroment", "test");
+    @LocalServerPort
+    private int port;
 
-        spec = new RequestSpecBuilder().setContentType(ContentType.JSON).setAccept(ContentType.JSON).setBaseUri("http://localhost:8080/").build();
+    @Before
+    public void setup() throws Exception {
+        spec = new RequestSpecBuilder().setContentType(ContentType.JSON).setAccept(ContentType.JSON).setPort(port).setBaseUri("http://localhost").build();
     }
 
     @Test
@@ -210,7 +209,7 @@ public class EventoControllerIT {
         // dado que não existe nenhum evento
 
         // quando o evento for buscado
-        Response resposta = apiGetPorId(1l);
+        Response resposta = apiGetPorId(1L);
 
         // então o status code deve ser NOT FOUND
         resposta.then().assertThat().statusCode(HttpStatus.SC_NOT_FOUND);
