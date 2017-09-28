@@ -10,6 +10,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.ObjectMapperType;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertNotEquals;
 
 // TODO: Fazer funcionar as annotations "SpringApplicationConfiguration" e "IntegrationTest" (ou "WebIntegrationTest")
 
@@ -61,7 +63,7 @@ public class EventoControllerIT {
         String stringJson = resposta.getBody().asString();
 
         // Clean up
-        apiDelete(stringJsonToEvento(stringJson).getIdEvento());
+        apiDelete(stringJsonToEvento(stringJson).getIdEvento()).then().assertThat().statusCode(HttpStatus.SC_OK);
     }
 
     @Test
@@ -83,10 +85,10 @@ public class EventoControllerIT {
 
         // e o evento retornado por get deve ser igual ao que foi populado
         Evento dtoCriado = stringJsonToEvento(apiGetPorNome(dtoPopulado.getNome()).getBody().asString());
-        assertEquals(dtoPopulado, dtoCriado);
+        assertEquals(dtoPopulado.getNome(), dtoCriado.getNome());
 
         // Clean up
-        apiDelete(dtoCriado.getIdEvento());
+        apiDelete(dtoCriado.getIdEvento()).then().assertThat().statusCode(HttpStatus.SC_OK);
     }
 
     @Test
@@ -103,21 +105,21 @@ public class EventoControllerIT {
     public void cadastrar_eventoComNomeCom150Caracteres_criado() throws ParseException, IOException {
         // dado um evento populado com nome de 150 caracteres
         Evento dtoPopulado = popularDto();
-        dtoPopulado.setNome("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar mi vitae elit dapibus aliquam. In vitae purus eu dolor molestie cras amet");
+        dtoPopulado.setNome(RandomStringUtils.randomAlphabetic(150));
 
         // quando cadastrar o evento, então o status code deve ser CREATED
         apiPost(dtoPopulado).then().assertThat().statusCode(HttpStatus.SC_CREATED);
 
         // Clean up
         Evento dtoCriado = stringJsonToEvento(apiGetPorNome(dtoPopulado.getNome()).getBody().asString());
-        apiDelete(dtoCriado.getIdEvento());
+        apiDelete(dtoCriado.getIdEvento()).then().assertThat().statusCode(HttpStatus.SC_OK);
     }
 
     @Test
     public void cadastrar_eventoComNomeCom151Caracteres_naoCriado() throws ParseException, JsonProcessingException {
         // dado um evento populado com nome de 151 caracteres
         Evento dto = popularDto();
-        dto.setNome("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pulvinar mi vitae elit dapibus aliquam. In vitae purus eu dolor molestie cras amet.");
+        dto.setNome(RandomStringUtils.randomAlphabetic(151));
 
         // quando cadastrar o evento, então o status code deve ser BAD REQUEST
         apiPost(dto).then().assertThat().statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -144,14 +146,17 @@ public class EventoControllerIT {
     }
 
     @Test
-    public void listar_eventosExistentes_eventosEncontrados() throws ParseException, JsonProcessingException {
+    public void listar_eventosExistentes_eventosEncontrados() throws ParseException, IOException {
         // dado um conjunto de eventos existentes
         Evento dto1 = popularDto();
         dto1.setNome("Evento1");
+        apiPost(dto1);
         Evento dto2 = popularDto();
         dto2.setNome("Evento2");
+        apiPost(dto2);
         Evento dto3 = popularDto();
         dto3.setNome("Evento3");
+        apiPost(dto3);
 
         // quando listar os eventos
         Response resposta = apiGetAll();
@@ -160,7 +165,12 @@ public class EventoControllerIT {
         resposta.then().assertThat().statusCode(HttpStatus.SC_OK);
 
         // e os eventos devem ser retornados
-        //TODO: verificar como será feito esse teste
+        assertNotEquals("[]", resposta.getBody().asString());
+
+        // clean up
+        apiDelete(stringJsonToEvento(apiGetPorNome(dto1.getNome()).getBody().asString()).getIdEvento());
+        apiDelete(stringJsonToEvento(apiGetPorNome(dto2.getNome()).getBody().asString()).getIdEvento());
+        apiDelete(stringJsonToEvento(apiGetPorNome(dto3.getNome()).getBody().asString()).getIdEvento());
     }
 
     @Test
@@ -174,7 +184,36 @@ public class EventoControllerIT {
         resposta.then().assertThat().statusCode(HttpStatus.SC_OK);
 
         // e nenhum evento deve ser retornado
-        //TODO: verificar como será feito esse teste
+        assertEquals("[]", resposta.getBody().asString());
+    }
+
+    @Test
+    public void buscarPorId_eventoExistente_eventoEncontrado() throws IOException {
+        // dado um evento existente
+        Evento dto = popularDto();
+        apiPost(dto);
+
+        // quando o evento for buscado
+        Response resposta = apiGetPorId(stringJsonToEvento(apiGetPorNome(dto.getNome()).getBody().asString()).getIdEvento());
+
+        // então o status code deve ser OK
+        resposta.then().assertThat().statusCode(HttpStatus.SC_OK);
+
+        String stringJson = resposta.getBody().asString();
+
+        // Clean up
+        apiDelete(stringJsonToEvento(stringJson).getIdEvento()).then().assertThat().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void buscarPorId_eventoInexistente_eventoNaoEncontrado() throws IOException {
+        // dado que não existe nenhum evento
+
+        // quando o evento for buscado
+        Response resposta = apiGetPorId(1l);
+
+        // então o status code deve ser NOT FOUND
+        resposta.then().assertThat().statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
     private Response apiPost(Evento dto) {
@@ -200,7 +239,7 @@ public class EventoControllerIT {
     private Evento popularDto() {
         Evento evento = new Evento();
 
-        evento.setNome("Meu evento");
+        evento.setNome(RandomStringUtils.randomAlphabetic(20));
         evento.setData(getTomorrow());
 
         return evento;
