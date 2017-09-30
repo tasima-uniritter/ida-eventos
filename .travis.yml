@@ -9,5 +9,5 @@ before_install:
 addons:
   sonarcloud:
     organization: "lucasgentile-github"
-scripts:
+script:
   - sonar-scanner
