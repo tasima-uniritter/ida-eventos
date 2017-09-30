@@ -14,6 +14,20 @@ apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
+apply plugin: 'jacoco'
+
+jacoco {
+	toolVersion = "0.7.6.201602180812"
+	reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination file("${buildDir}/jacocoHtml")
+	}
+}
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -26,14 +40,28 @@ configurations {
 	providedRuntime
 }
 
+task stage(type: Copy, dependsOn: [clean, build]) {
+	from jar.archivePath
+	into project.rootDir
+	rename {
+		'app.jar'
+	}
+}
+stage.mustRunAfter(clean)
+
+clean << {
+	project.file('app.jar').delete()
+}
+
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
-	compile('org.springframework.boot:spring-boot-starter-jdbc')
-	compile('org.springframework.boot:spring-boot-starter-jersey')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.projectlombok:lombok')
+	compile("io.springfox:springfox-swagger2:2.6.1")
+	compile("io.springfox:springfox-swagger-ui:2.6.1")
 	runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('com.h2database:h2')
-	compileOnly('org.projectlombok:lombok')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('io.rest-assured:rest-assured:3.0.3')
 }
