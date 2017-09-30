@@ -2,7 +2,7 @@ package br.com.uniritter.tasima.idaEventos.integration;
 
 import br.com.uniritter.tasima.idaEventos.IdaEventosApplication;
 import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
-import br.com.uniritter.tasima.idaEventos.domain.model.Ingresso;
+import br.com.uniritter.tasima.idaEventos.domain.model.TipoIngresso;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
@@ -261,10 +261,10 @@ public class EventoControllerIntegrationTest {
         evento.setDataInicioVendaIngressos(getHoje());
         evento.setDataFimVendaIngressos(getAmanha());
 
-        evento.setIngressosDisponiveis(Sets.newHashSet(
-                new Ingresso(1L, TIPO_INGRESSO_BACKSTAGE, 2000D),
-                new Ingresso(2L, TIPO_INGRESSO_PLATEIA, 500D),
-                new Ingresso(3L, TIPO_INGRESSO_PLATEIA_VIP, 700D)
+        evento.setTiposIngressoDisponiveis(Sets.newHashSet(
+                new TipoIngresso(1L, TIPO_INGRESSO_BACKSTAGE, 2000D),
+                new TipoIngresso(2L, TIPO_INGRESSO_PLATEIA, 500D),
+                new TipoIngresso(3L, TIPO_INGRESSO_PLATEIA_VIP, 700D)
         ));
 
         return evento;

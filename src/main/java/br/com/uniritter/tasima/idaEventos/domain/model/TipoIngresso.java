@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -17,12 +16,12 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Table(name="INGRESSO")
-public class Ingresso {
+public class TipoIngresso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="ID_INGRESSO")
-    private Long idIngresso;
+    @Column(name="ID_TIPO_INGRESSO")
+    private Long idTipoIngresso;
 
     @NotNull
     @Column(name="TIPO", unique = true)
