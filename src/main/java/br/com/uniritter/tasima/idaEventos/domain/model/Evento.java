@@ -39,13 +39,12 @@ public class Evento {
     private Date data;
 
     @NotNull
-    @Future(message = "erro.evento.dataVentaIngresso.futuro")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(name="DATA_INICIO_VENDA_INGRESSOS")
     private Date dataInicioVendaIngressos;
 
     @NotNull
-    @Future(message = "erro.evento.dataVentaIngresso.futuro")
+    @Future(message = "erro.evento.dataVendaIngresso.futuro")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     @Column(name="DATA_FIM_VENDA_INGRESSOS")
     private Date dataFimVendaIngressos;

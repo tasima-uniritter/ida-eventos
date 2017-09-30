@@ -14,6 +14,20 @@ apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
+apply plugin: 'jacoco'
+
+jacoco {
+	toolVersion = "0.7.6.201602180812"
+	reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination file("${buildDir}/jacocoHtml")
+	}
+}
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8

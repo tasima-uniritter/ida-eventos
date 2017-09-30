@@ -2,8 +2,10 @@ package br.com.uniritter.tasima.idaEventos.integration;
 
 import br.com.uniritter.tasima.idaEventos.IdaEventosApplication;
 import br.com.uniritter.tasima.idaEventos.domain.model.Evento;
+import br.com.uniritter.tasima.idaEventos.domain.model.Ingresso;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.ObjectMapperType;
@@ -29,8 +31,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-//TODO Arrumar testes unitários de acordo com a implementação da US #3 - Disponibilizar Ingressos
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -40,6 +40,11 @@ import static org.junit.Assert.assertNotEquals;
         locations = "classpath:application-integrationtest.properties")
 public class EventoControllerIntegrationTest {
     private static RequestSpecification spec;
+
+    private static String TIPO_INGRESSO_VIP = "VIP";
+    private static String TIPO_INGRESSO_BACKSTAGE = "BACKSTAGE";
+    private static String TIPO_INGRESSO_PLATEIA_VIP = "PLATEIA VIP";
+    private static String TIPO_INGRESSO_PLATEIA = "PLATEIA";
 
     @LocalServerPort
     private int port;
@@ -140,7 +145,7 @@ public class EventoControllerIntegrationTest {
     public void cadastrar_eventoDataPassada_naoCriado() throws ParseException, JsonProcessingException {
         // dado um evento populado com data passada
         Evento dto = popularDto();
-        dto.setData(getYesterday());
+        dto.setData(getOntem());
 
         // quando cadastrar o evento, então o status code deve ser BAD REQUEST
         apiPost(dto).then().assertThat().statusCode(HttpStatus.SC_BAD_REQUEST);
@@ -217,31 +222,50 @@ public class EventoControllerIntegrationTest {
         resposta.then().assertThat().statusCode(HttpStatus.SC_NOT_FOUND);
     }
 
+    @Test
+    public void cadastrar_eventoPeriodoVendaIngressoInvalido_naoCriado() throws ParseException, JsonProcessingException {
+        // dado um evento populado com a data final de venda de ingressos inferior a data inicial da venda de ingressos
+        Evento dto = popularDto();
+        dto.setDataInicioVendaIngressos(getHoje());
+        dto.setDataFimVendaIngressos(getOntem());
+
+        // quando cadastrar o evento, então o status code deve ser BAD REQUEST
+        apiPost(dto).then().assertThat().statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
+
     private Response apiPost(Evento dto) {
-        return given().spec(spec).body(dto, ObjectMapperType.JACKSON_2).when().post("/api/evento/cadastrar");
+        return given().spec(spec).body(dto, ObjectMapperType.JACKSON_2).when().post("/ida-eventos-api/evento/cadastrar");
     }
 
     private Response apiDelete(long id) {
-        return given().spec(spec).delete("/api/evento/deletar/" + id);
+        return given().spec(spec).delete("/ida-eventos-api/evento/deletar/" + id);
     }
 
     private Response apiGetPorId(long id) {
-        return given().spec(spec).get("/api/evento/id/" + id);
+        return given().spec(spec).get("/ida-eventos-api/evento/id/" + id);
     }
 
     private Response apiGetPorNome(String nome) {
-        return given().spec(spec).get("/api/evento/buscar/" + nome);
+        return given().spec(spec).get("/ida-eventos-api/evento/buscar/" + nome);
     }
 
     private Response apiGetAll() {
-        return given().spec(spec).get("/api/evento/listar");
+        return given().spec(spec).get("/ida-eventos-api/evento/listar");
     }
 
     private Evento popularDto() {
         Evento evento = new Evento();
 
         evento.setNome(RandomStringUtils.randomAlphabetic(20));
-        evento.setData(getTomorrow());
+        evento.setData(getAmanha());
+        evento.setDataInicioVendaIngressos(getHoje());
+        evento.setDataFimVendaIngressos(getAmanha());
+
+        evento.setIngressosDisponiveis(Sets.newHashSet(
+                new Ingresso(1L, TIPO_INGRESSO_BACKSTAGE, 2000D),
+                new Ingresso(2L, TIPO_INGRESSO_PLATEIA, 500D),
+                new Ingresso(3L, TIPO_INGRESSO_PLATEIA_VIP, 700D)
+        ));
 
         return evento;
     }
@@ -251,13 +275,18 @@ public class EventoControllerIntegrationTest {
         return mapper.readValue(stringJson, Evento.class);
     }
 
-    private Date getTomorrow() {
+    private Date getHoje() {
+        Calendar cal = Calendar.getInstance();
+        return cal.getTime();
+    }
+
+    private Date getAmanha() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
         return cal.getTime();
     }
 
-    private Date getYesterday() {
+    private Date getOntem() {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, - 1);
         return cal.getTime();
