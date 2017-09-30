@@ -36,6 +36,10 @@ public class IngressoService {
         return ingressoRepository.findOne(id);
     }
 
+    public void deletar(long id) {
+        ingressoRepository.delete(id);
+    }
+
     public double calcularValorDoIngressoComDesconto(Ingresso ingresso, CategoriaDesconto categoriaDesconto) {
         return this.calculadoraDescontoFactory
                 .getStrategy(categoriaDesconto.getCategoria())

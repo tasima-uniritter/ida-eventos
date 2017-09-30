@@ -41,6 +41,12 @@ public class IngressoController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deletar/{id}")
+    public ResponseEntity<?> deletar(@PathVariable long id) {
+        ingressoService.deletar(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET, value = "/id/{id}")
     public ResponseEntity<Ingresso> buscarPorId(@PathVariable long id) {
