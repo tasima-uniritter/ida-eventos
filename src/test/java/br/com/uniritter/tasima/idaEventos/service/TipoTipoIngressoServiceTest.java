@@ -1,11 +1,11 @@
 package br.com.uniritter.tasima.idaEventos.service;
 
 import br.com.uniritter.tasima.idaEventos.domain.enums.CategoriaDesconto;
-import br.com.uniritter.tasima.idaEventos.domain.model.Ingresso;
+import br.com.uniritter.tasima.idaEventos.domain.model.TipoIngresso;
 import br.com.uniritter.tasima.idaEventos.domain.model.factory.CalculadoraDescontoFactory;
 import br.com.uniritter.tasima.idaEventos.domain.model.strategy.*;
-import br.com.uniritter.tasima.idaEventos.domain.repository.IngressoRepository;
-import br.com.uniritter.tasima.idaEventos.domain.service.IngressoService;
+import br.com.uniritter.tasima.idaEventos.domain.repository.TipoIngressoRepository;
+import br.com.uniritter.tasima.idaEventos.domain.service.TipoIngressoService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,14 +17,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-public class IngressoServiceTest {
+public class TipoTipoIngressoServiceTest {
 
     @TestConfiguration
     static class IngressoServiceTestContextConfiguration {
 
         @Bean
-        public IngressoService ingressoService() {
-            return new IngressoService();
+        public TipoIngressoService ingressoService() {
+            return new TipoIngressoService();
         }
 
         @Bean
@@ -51,56 +51,56 @@ public class IngressoServiceTest {
     }
 
     @Autowired
-    private IngressoService ingressoService;
+    private TipoIngressoService tipoIngressoService;
 
     @MockBean
-    private IngressoRepository ingressoRepository;
+    private TipoIngressoRepository tipoIngressoRepository;
 
 
-    private static Ingresso ingresso = null;
+    private static TipoIngresso tipoIngresso = null;
 
     @Test
     public void calcularValorComDescontoEstudante_100_50() {
-        ingresso = new Ingresso();
+        tipoIngresso = new TipoIngresso();
 
-        ingresso.setValor(100D);
+        tipoIngresso.setValor(100D);
 
-        Assert.assertEquals(50, ingressoService.calcularValorDoIngressoComDesconto(ingresso, CategoriaDesconto.ESTUDANTE), 0);
+        Assert.assertEquals(50, tipoIngressoService.calcularValorDoIngressoComDesconto(tipoIngresso, CategoriaDesconto.ESTUDANTE), 0);
     }
 
     @Test
     public void calcularValorComDescontoIdoso_200_100() {
-        ingresso = new Ingresso();
+        tipoIngresso = new TipoIngresso();
 
-        ingresso.setValor(200D);
+        tipoIngresso.setValor(200D);
 
-        Assert.assertEquals(100, ingressoService.calcularValorDoIngressoComDesconto(ingresso, CategoriaDesconto.IDOSO), 0);
+        Assert.assertEquals(100, tipoIngressoService.calcularValorDoIngressoComDesconto(tipoIngresso, CategoriaDesconto.IDOSO), 0);
     }
 
     @Test
     public void calcularValorComDescontoMembroGold_100_15() {
-        ingresso = new Ingresso();
+        tipoIngresso = new TipoIngresso();
 
-        ingresso.setValor(100D);
+        tipoIngresso.setValor(100D);
 
-        Assert.assertEquals(25, ingressoService.calcularValorDoIngressoComDesconto(ingresso, CategoriaDesconto.MEMBRO_GOLD), 0);
+        Assert.assertEquals(25, tipoIngressoService.calcularValorDoIngressoComDesconto(tipoIngresso, CategoriaDesconto.MEMBRO_GOLD), 0);
     }
 
     @Test
     public void calcularValorComDescontoMembroSilver_100_40() {
-        ingresso = new Ingresso();
+        tipoIngresso = new TipoIngresso();
 
-        ingresso.setValor(100D);
+        tipoIngresso.setValor(100D);
 
-        Assert.assertEquals(40, ingressoService.calcularValorDoIngressoComDesconto(ingresso, CategoriaDesconto.MEMBRO_SILVER), 0);
+        Assert.assertEquals(40, tipoIngressoService.calcularValorDoIngressoComDesconto(tipoIngresso, CategoriaDesconto.MEMBRO_SILVER), 0);
     }
 
     @Test
     public void calcularValorSemDesconto_100_100() {
-        ingresso = new Ingresso();
+        tipoIngresso = new TipoIngresso();
 
-        ingresso.setValor(100D);
+        tipoIngresso.setValor(100D);
 
-        Assert.assertEquals(100, ingressoService.calcularValorDoIngressoComDesconto(ingresso, CategoriaDesconto.PUBLICO_GERAL), 0);
+        Assert.assertEquals(100, tipoIngressoService.calcularValorDoIngressoComDesconto(tipoIngresso, CategoriaDesconto.PUBLICO_GERAL), 0);
     }
 }

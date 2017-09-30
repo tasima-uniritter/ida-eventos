@@ -51,10 +51,10 @@ public class Evento {
 
     @NotNull
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "EVENTO_INGRESSO",
+    @JoinTable(name = "EVENTO_TIPO_INGRESSO",
             joinColumns = { @JoinColumn(name = "ID_EVENTO") },
             inverseJoinColumns = { @JoinColumn(name = "ID_INGRESSO") })
-    private Set<Ingresso> ingressosDisponiveis;
+    private Set<TipoIngresso> tiposIngressoDisponiveis;
 
     @AssertTrue(message = "erro.evento.periodoVendasIngresso")
     private boolean isValid() {
